@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dice Roll Simulator</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin: 20px;
+            }
+            #chart-container {
+                width: 60%;
+                margin: auto;
+            }
+            .controls {
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Dice Roll Simulator</h1>
+        <div class="controls">
+            <label for="numRolls">Number of Rolls:</label>
+            <input type="number" id="numRolls" value="600" min="1" />
+            <button onclick="simulateRolls()">Roll the Dice</button>
+        </div>
+
+        <div id="chart-container">
+            <canvas id="resultsChart"></canvas>
+        </div>
+
+        <script>
+            function simulateRolls() {
+                const numRolls = document.getElementById("numRolls").value;
+                const rolls = [];
+                for (let i = 0; i < numRolls; i++) {
+                    rolls.push(Math.floor(Math.random() * 6) + 1);
+                }
+
+                const counts = [0, 0, 0, 0, 0, 0];
+                rolls.forEach((roll) => {
+                    counts[roll - 1]++;
+                });
+
+                updateChart(counts);
+            }
+
+            function updateChart(counts) {
+                const ctx = document
+                    .getElementById("resultsChart")
+                    .getContext("2d");
+                if (window.myChart) {
+                    window.myChart.destroy();
+                }
+                window.myChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: ["1", "2", "3", "4", "5", "6"],
+                        datasets: [
+                            {
+                                label: "Number of Rolls",
+                                data: counts,
+                                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                                borderColor: "rgba(75, 192, 192, 1)",
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+
+            // Initial simulation
+            simulateRolls();
+        </script>
+    </body>
+</html>
